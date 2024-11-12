@@ -1,0 +1,6 @@
+
+powershell -ExecutionPolicy Bypass
+
+.\myenv\Scripts\Activate
+
+
