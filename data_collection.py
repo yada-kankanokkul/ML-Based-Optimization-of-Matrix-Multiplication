@@ -4,7 +4,7 @@ import pandas as pd
 import time
 import memory_profiler  # If this doesn't work, try switching to psutil
 import matplotlib.pyplot as plt
-from scipy.linalg import blas
+# from scipy.linalg import blas
 
 # Function to generate dense matrix
 def generate_dense_matrix(size):
@@ -103,15 +103,15 @@ def main():
         dense_matrix = generate_dense_matrix(size)
         sparse_matrix = generate_sparse_matrix(size)
         
-        # Benchmark dense x dense matrix multiplication
+         # Benchmark dense x dense matrix multiplication
         exec_time, mem_usage, result = benchmark_matrix_multiplication(dense_matrix, dense_matrix, naive_multiplication)
-        results.append({'Size': size, 'Type': 'Dense', 'Algorithm': 'Naive', 'Time (s)': exec_time, 'Memory (MB)': mem_usage})
+        results.append({'Size': size, 'Type': 'Dense x Dense', 'Algorithm': 'Naive', 'Time (s)': exec_time, 'Memory (MB)': mem_usage})
         
         # Benchmark sparse x sparse matrix multiplication
         exec_time, mem_usage, result = benchmark_matrix_multiplication(sparse_matrix, sparse_matrix, naive_multiplication)
-        results.append({'Size': size, 'Type': 'Sparse', 'Algorithm': 'Naive', 'Time (s)': exec_time, 'Memory (MB)': mem_usage})
+        results.append({'Size': size, 'Type': 'Sparse x Sparse', 'Algorithm': 'Naive', 'Time (s)': exec_time, 'Memory (MB)': mem_usage})
 
-         # Benchmark dense x sparse matrix multiplication
+        # Benchmark dense x sparse matrix multiplication
         exec_time, mem_usage, result = benchmark_matrix_multiplication(dense_matrix, sparse_matrix, naive_multiplication)
         results.append({'Size': size, 'Type': 'Dense x Sparse', 'Algorithm': 'Naive', 'Time (s)': exec_time, 'Memory (MB)': mem_usage})
         
@@ -119,10 +119,10 @@ def main():
         exec_time, mem_usage, result = benchmark_matrix_multiplication(sparse_matrix, dense_matrix, naive_multiplication)
         results.append({'Size': size, 'Type': 'Sparse x Dense', 'Algorithm': 'Naive', 'Time (s)': exec_time, 'Memory (MB)': mem_usage})
 
-
     # Convert results to DataFrame
     df = pd.DataFrame(results)
-    print(df.head())  # Display the first few rows
+    pd.set_option('display.max_rows', None)
+    print(df)
     printout(df)
     save_to_csv(df)
 
