@@ -84,9 +84,3 @@ Performance Graphs:
 Project Report:
 
 	• A detailed technical report explaining the AI approach, results, and implications of the project.
-
-Libraries/Tools:
-	• PyTorch: For reinforcement learning and tensor operations.
-	• Gym: For defining the RL environment.
-	• NumPy: For matrix manipulation and traditional multiplication.
-  • Matplotlib: For plotting performance graphs.![image](https://github.com/user-attachments/assets/a9d117c8-00e8-46dc-b229-f2fef98bc87e)
