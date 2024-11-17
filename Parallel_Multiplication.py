@@ -1,77 +1,168 @@
 import numpy as np
-from concurrent.futures import ThreadPoolExecutor
-from Matrix_Multiplication import naive_multiplication, strassen_multiplication, block_multiplication
+import multiprocessing
 
-def parallel_multiplication(A, B, method='naive', num_threads=4, block_size=2):
-    """
-    Perform matrix multiplication in parallel using the specified method.
+# Function to check if two matrices can be multiplied
+def isValidSize(A, B):
+    cols_A = A.shape[1]
+    rows_B = B.shape[0]
+    return cols_A == rows_B
 
-    Parameters:
-    A, B: np.ndarray
-        Input matrices to multiply.
-    method: str
-        The method to use for matrix multiplication. Options: 'naive', 'strassen', 'block'.
-    num_threads: int
-        Number of threads to use for parallel computation.
-    block_size: int
-        Block size for block multiplication (used only if method is 'block').
+# Function to check if a number is a power of two
+def is_power_of_two(n):
+    if n <= 0:
+        return False
+    return (n & (n - 1)) == 0
 
-    Returns:
-    np.ndarray
-        Result of the matrix multiplication.
-    """
-    rows_A, cols_A = A.shape
-    rows_B, cols_B = B.shape
+# Worker function for naive multiplication
+# This function handles the matrix multiplication for a specific subset of rows
+def naive_worker(args):
+    A, B, row_range = args # Unpack arguments: matrix A, matrix B, and the subset of rows to process
 
-    # Ensure valid matrix multiplication
-    if cols_A != rows_B:
-        raise ValueError("Number of columns in A must equal the number of rows in B.")
+    rows = len(row_range)
+    cols = B.shape[1]
+    result = np.zeros((rows, cols)) # Initialize zero matrix
 
-    # Initialize result matrix
-    result = np.zeros((rows_A, cols_B))
-
-    # Select the multiplication method
-    if method == 'naive':
-        multiplication_func = naive_multiplication
-    elif method == 'strassen':
-        multiplication_func = strassen_multiplication
-    elif method == 'block':
-        multiplication_func = lambda x, y: block_multiplication(x, y, block_size=block_size)
-    else:
-        raise ValueError("Invalid method. Choose from 'naive', 'strassen', or 'block'.")
-
-    def compute_row(row_index):
-        """Compute a single row of the result matrix."""
-        for col_index in range(cols_B):
-            # Slice rows and columns for block multiplication
-            result[row_index, col_index] = multiplication_func(
-                A[row_index:row_index + 1, :],
-                B[:, col_index:col_index + 1]
-            )[0, 0]
-
-    # Perform parallel computation
-    with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        executor.map(compute_row, range(rows_A))
+    for idx, i in enumerate(row_range):
+        for j in range(cols):
+            for k in range(A.shape[1]):
+                result[idx][j] += A[i][k] * B[k][j]
 
     return result
 
+# Naive multiplication using parallel processing
+def naive_multiplication(A, B, pool, num_processes):
+    rows = A.shape[0]
+    row_ranges = np.array_split(range(rows), num_processes)
+    tasks = []
+    for rows in row_ranges:
+        task = (A, B, rows)
+        tasks.append(task)
 
+    results = pool.map(naive_worker, tasks)
+
+    return np.vstack(results)
+
+# Worker function for block multiplication
+def block_worker(args):
+    A_block, B_block = args
+    return np.dot(A_block, B_block)
+
+# Block multiplication using parallel processing
+def block_multiplication(A, B, pool, block_size):
+    rows = A.shape[0]
+    cols = B.shape[1]
+    inner = A.shape[1]
+    result = np.zeros((rows, cols))
+
+    # Divide the matrices into smaller blocks and create tasks for each block multiplication
+    tasks = []
+    for i in range(0, rows, block_size):
+        for j in range(0, cols, block_size):
+            for k in range(0, inner, block_size):
+                A_block = A[i:i + block_size, k:k + block_size]
+                B_block = B[k:k + block_size, j:j + block_size]
+                tasks.append((A_block, B_block))
+
+    # Use a pool of workers to process the tasks in parallel
+    results = pool.map(block_worker, tasks)
+
+    # Reconstruct the result matrix from the computed blocks
+    idx = 0
+    for i in range(0, rows, block_size):
+        for j in range(0, cols, block_size):
+            result[i:i + block_size, j:j + block_size] += results[idx]
+            idx += 1
+
+    return result
+
+# Strassen multiplication function
+def strassen_multiplication(A, B):
+    # Strassen's algorithm is only applicable to square matrices with dimensions as powers of two
+    if A.shape[0] != A.shape[1] or B.shape[0] != B.shape[1]:
+        raise ValueError("Matrices must be square.")
+    if not is_power_of_two(A.shape[0]):
+        raise ValueError("Matrix dimensions must be powers of 2.")
+
+    # Base case: 1x1 matrices
+    if A.shape[0] == 1:
+        return A * B
+
+    # Split matrices into quadrants
+    mid = A.shape[0] // 2 # Find the midpoint to divide the matrices into quadrants
+    A11 = A[:mid, :mid]
+    A12 = A[:mid, mid:]
+    A21 = A[mid:, :mid]
+    A22 = A[mid:, mid:]
+    B11 = B[:mid, :mid]
+    B12 = B[:mid, mid:]
+    B21 = B[mid:, :mid]
+    B22 = B[mid:, mid:]
+
+    # Compute the 7 products required by Strassen's algorithm
+    M1 = strassen_multiplication(A11 + A22, B11 + B22)
+    M2 = strassen_multiplication(A21 + A22, B11)
+    M3 = strassen_multiplication(A11, B12 - B22)
+    M4 = strassen_multiplication(A22, B21 - B11)
+    M5 = strassen_multiplication(A11 + A12, B22)
+    M6 = strassen_multiplication(A21 - A11, B11 + B12)
+    M7 = strassen_multiplication(A12 - A22, B21 + B22)
+
+    # Compute the four quadrants of the resulting matrix
+    C11 = M1 + M4 - M5 + M7
+    C12 = M3 + M5
+    C21 = M2 + M4
+    C22 = M1 - M2 + M3 + M6
+
+    # Combine the quadrants into the final result
+    C = np.zeros((A.shape[0], A.shape[1]))
+    mid = A.shape[0] // 2
+    C[:mid, :mid] = C11 # Top-left quadrant
+    C[:mid, mid:] = C12 # Top-right quadrant
+    C[mid:, :mid] = C21 # Bottom-left quadrant
+    C[mid:, mid:] = C22 # Bottom-right quadrant
+
+    return C
+
+# Parallel multiplication function to choose the multiplication method
+def parallel_multiplication(A, B, method='naive', num_processes=2, block_size=2):
+    # Check if the matrices can be multiplied
+    if not isValidSize(A, B):
+        raise ValueError("Number of columns in A must equal the number of rows in B.")
+
+    # Use multiprocessing to perform the chosen multiplication method
+    with multiprocessing.Pool(processes=num_processes) as pool:
+        if method == 'naive':
+            return naive_multiplication(A, B, pool, num_processes)
+        elif method == 'block':
+            return block_multiplication(A, B, pool, block_size)
+        elif method == 'strassen':
+            return strassen_multiplication(A, B)
+        else:
+            raise ValueError(f"Unknown method '{method}'.")
+
+# Main section
 if __name__ == "__main__":
-    # Input matrices
-    A = np.random.rand(4, 4)
-    B = np.random.rand(4, 4)
+    # Generate two random 8x8 matrices for multiplication
+    A = np.random.rand(8, 8)
+    B = np.random.rand(8, 8)
 
-    # Perform parallel multiplication with naive method
     print("Naive Multiplication in Parallel:")
-    result_naive = parallel_multiplication(A, B, method='naive', num_threads=4)
-    print(result_naive)
+    try:
+        result_naive = parallel_multiplication(A, B, method='naive', num_processes=2, block_size=2)
+        print(result_naive)
+    except Exception as e:
+        print(f"Failed to perform naive parallel multiplication: {e}")
 
-    # Perform parallel multiplication with strassen method
     print("\nStrassen Multiplication in Parallel:")
-    result_strassen = parallel_multiplication(A, B, method='strassen', num_threads=4)
-    print(result_strassen)
+    try:
+        result_strassen = parallel_multiplication(A, B, method='strassen', num_processes=2, block_size=2)
+        print(result_strassen)
+    except Exception as e:
+        print(f"Failed to perform strassen parallel multiplication: {e}")
 
-    # Perform parallel multiplication with block method
     print("\nBlock Multiplication in Parallel:")
-    result_block = parallel_multiplication(A, B, method='block', num_threads=4, block_size=2)
-    print(result_block)
+    try:
+        result_block = parallel_multiplication(A, B, method='block', num_processes=2, block_size=2)
+        print(result_block)
+    except Exception as e:
+        print(f"Failed to perform block parallel multiplication: {e}")
