@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import time
-import memory_profiler  # If this doesn't work, try switching to psutil
+import memory_profiler  
 import matplotlib.pyplot as plt
 # from scipy.linalg import blas
 
