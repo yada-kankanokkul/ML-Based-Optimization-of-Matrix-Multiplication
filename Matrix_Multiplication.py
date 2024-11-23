@@ -41,7 +41,7 @@ def naive_multiplication(A, B):
     return result
 
 
-def block_multiplication(A, B, block_size=2):
+def block_multiplication(A, B, block_size=4):
     """
     Perform matrix multiplication using the block method.
 

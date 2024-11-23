@@ -131,11 +131,11 @@ def parallel_multiplication(A, B, method='naive', num_processes=2, block_size=2)
 
     # Use multiprocessing to perform the chosen multiplication method
     with multiprocessing.Pool(processes=num_processes) as pool:
-        if method == 'naive':
+        if method.lower() == 'naive':
             return naive_multiplication(A, B, pool, num_processes)
-        elif method == 'block':
+        elif method.lower() == 'block':
             return block_multiplication(A, B, pool, block_size)
-        elif method == 'strassen':
+        elif method.lower() == 'strassen':
             return strassen_multiplication(A, B)
         else:
             raise ValueError(f"Unknown method '{method}'.")
