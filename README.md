@@ -1,6 +1,6 @@
-# AI-Based-Optimization-of-Matrix-Multiplication
+# ML-Based-Optimization-of-Matrix-Multiplication
 
-Project Title: AI-Based Optimization of Matrix Multiplication Performance Using Reinforcement Learning
+Project Title: ML-Based Optimization of Matrix Multiplication Performance Using Reinforcement Learning
 
 Project Objective:
 The goal of this project is to optimize matrix multiplication using Reinforcement Learning (RL), where an agent learns to partition matrices and compute products in an optimized way based on hardware and computational constraints. This will be compared to traditional matrix multiplication methods, including the naive and Strassen’s algorithms.
@@ -13,7 +13,7 @@ The goal of this project is to optimize matrix multiplication using Reinforcemen
 	• Matrix Generation: You will generate different types of matrices (dense, sparse, square, rectangular) with varying sizes. Examples:
 		○ Dense square matrices of size 100x100, 500x500, etc.
 		○ Sparse matrices with 10% of non-zero entries.
-	• Benchmarking Data: For each matrix type and size, you will benchmark traditional matrix multiplication (naive O(n^3), Strassen's algorithm, etc.) and record the computation time and memory usage.
+	• Benchmarking Data: For each matrix type and size, benchmark traditional matrix multiplication (naive O(n^3), Strassen's algorithm, etc.) and record the computation time and memory usage.
 	• Performance Metrics: Use time (execution time) and memory (RAM usage) as metrics for evaluating the performance of matrix multiplication algorithms.
 
 3. Choosing Reinforcement Learning (RL) Approach
@@ -66,20 +66,7 @@ The goal of this project is to optimize matrix multiplication using Reinforcemen
 
 Deliverables:
 
-GitHub Repository:
 
-	• Codebase for the matrix multiplication optimization using RL (with clear instructions on how to run the project).
-	• Benchmarking scripts and results.
-	• Pre-trained models (if applicable).
-	• Documentation and a project readme.
-
-Web or Command-line Interface:
-
-	• A simple interface where users can input matrix sizes and see the optimized multiplication time and memory usage.
-
-Performance Graphs:
-
-	• Plots comparing the traditional methods (Naive, Strassen’s) vs. the RL-optimized approach.
 	
 Project Report:
 
