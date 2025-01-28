@@ -11,7 +11,7 @@ The goal of this project is to optimize matrix multiplication using Reinforcemen
 
 2. Data Collection
 	• Matrix Generation: You will generate different types of matrices (dense, sparse, square, rectangular) with varying sizes. Examples:
-		○ Dense square matrices of size 100x100, 500x500, etc.
+		○ Dense square matrices of size 4x4, 256x256, etc.
 		○ Sparse matrices with 10% of non-zero entries.
 	• Benchmarking Data: For each matrix type and size, benchmark traditional matrix multiplication (naive O(n^3), Strassen's algorithm, etc.) and record the computation time and memory usage.
 	• Performance Metrics: Use time (execution time) and memory (RAM usage) as metrics for evaluating the performance of matrix multiplication algorithms.
