@@ -3,17 +3,17 @@
 Project Title: ML-Based Optimization of Matrix Multiplication Performance Using Reinforcement Learning
 
 Project Objective:
-The goal of this project is to optimize matrix multiplication using Reinforcement Learning (RL), where an agent learns to partition matrices and compute products in an optimized way based on hardware and computational constraints. This will be compared to traditional matrix multiplication methods, including the naive and Strassen’s algorithms.
+The goal of this project is to optimize matrix multiplication using Reinforcement Learning (RL), where an agent learns to partition matrices and compute products in an optimized way based on hardware and computational constraints. This will be compared to traditional matrix multiplication methods.
 
 1. Problem Definition
 	• Goal: Matrix multiplication is a fundamental operation in AI, and optimizing it can significantly reduce computational time and resource consumption.
 	• Objective: Use RL to optimize matrix multiplication by determining the best way to partition matrices for faster computation, minimizing time and memory usage.
 
 2. Data Collection
-	• Matrix Generation: You will generate different types of matrices (dense, sparse, square, rectangular) with varying sizes. Examples:
+	• Matrix Generation: Generate different types of matrices (dense, sparse) with varying sizes. Examples:
 		○ Dense square matrices of size 4x4, 256x256, etc.
 		○ Sparse matrices with 10% of non-zero entries.
-	• Benchmarking Data: For each matrix type and size, benchmark traditional matrix multiplication (naive O(n^3), Strassen's algorithm, etc.) and record the computation time and memory usage.
+	• Benchmarking Data: For each matrix type and size, benchmark traditional matrix multiplication (naive, Strassen's algorithm, block partitioning) and record the computation time and memory usage.
 	• Performance Metrics: Use time (execution time) and memory (RAM usage) as metrics for evaluating the performance of matrix multiplication algorithms.
 
 3. Choosing Reinforcement Learning (RL) Approach
@@ -35,7 +35,7 @@ The goal of this project is to optimize matrix multiplication using Reinforcemen
 
 5. Training the RL Agent
 	• Training Loop:
-		○ Use the Q-learning or PPO algorithm to train your agent.
+		○ Use the PPO algorithm to train agent.
 		○ The agent will interact with the matrix multiplication environment, choosing actions that maximize the reward.
 		○ Over time, the agent will learn optimal strategies for matrix multiplication based on size, sparsity, and partitioning options.
 	• Hyperparameters: Tune learning rates, exploration-exploitation trade-offs (epsilon-greedy for Q-learning), and the discount factor.
@@ -44,7 +44,7 @@ The goal of this project is to optimize matrix multiplication using Reinforcemen
 	• Benchmark Results: After training the RL agent, test it on unseen matrices and evaluate how well it performs compared to traditional algorithms. Measure:
 		○ Execution time.
 		○ Memory consumption.
-	• Performance Comparison: Plot graphs comparing the performance of your RL agent against the naive matrix multiplication and Strassen’s algorithm on various matrix types and sizes.
+	• Performance Comparison: Plot graphs comparing the performance of RL agent against the naive matrix multiplication and Strassen’s algorithm on various matrix types and sizes.
 
 7. Visualization and Deployment
 	• Interactive Visualization:
@@ -53,10 +53,10 @@ The goal of this project is to optimize matrix multiplication using Reinforcemen
 	• Real-Time Performance:
 		○ Show real-time optimization and performance improvements with the AI model.
 	• Deployment Options:
-		○ Deploy the model on a server or cloud platform (AWS, GCP, etc.) for testing on larger matrices.
+		○ Deploy the model on a server or cloud platform for testing on larger matrices.
 
 8. Documentation
-	• Code Documentation: Make sure all your code is well-commented and organized into clear functions and modules.
+	• Code Documentation: Make sure all code is well-commented and organized into clear functions and modules.
 	• Project Report: Write a comprehensive report detailing the:
 		○ Problem background.
 		○ Approach to optimizing matrix multiplication using RL.
