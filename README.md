@@ -17,7 +17,7 @@ The goal of this project is to optimize matrix multiplication using Reinforcemen
 	• Performance Metrics: Use time (execution time) and memory (RAM usage) as metrics for evaluating the performance of matrix multiplication algorithms.
 
 3. Choosing Reinforcement Learning (RL) Approach
-	• State Space: The state is represented by the matrix size (e.g., 100x100, 500x500), the sparsity of the matrix (dense or sparse), and the partitioning options for each matrix multiplication task.
+	• State Space: The state is represented by the matrix size (e.g., 4x4, 256x256), the sparsity of the matrix (dense or sparse), and the partitioning options for each matrix multiplication task.
 	• Action Space: Actions are the strategies for partitioning the matrix (e.g., dividing the matrix into blocks, choosing specific multiplication methods like Strassen’s, or adjusting parallelization).
 	• Reward Function: The reward is based on the performance metrics (time and memory). The reward will be positive if the optimization reduces time or memory usage compared to traditional methods.
 	• RL Algorithm: Use Q-learning or Proximal Policy Optimization (PPO) for training the RL agent. This will help the agent explore the best ways to optimize matrix multiplication.
